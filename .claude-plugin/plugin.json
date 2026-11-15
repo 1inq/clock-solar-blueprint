@@ -1,0 +1,6 @@
+{
+  "name": "clock-solar-blueprint",
+  "version": "0.1.0",
+  "description": "Blueprint-style animated backdrop: a live clock, the solar system with today's real planet positions, and a time-zone globe centred on your location.",
+  "license": "Apache-2.0"
+}

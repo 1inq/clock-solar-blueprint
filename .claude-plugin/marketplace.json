@@ -1,0 +1,5 @@
+{
+  "name": "clock-solar-blueprint",
+  "owner": { "name": "clock-solar-blueprint" },
+  "plugins": [{ "name": "clock-solar-blueprint", "source": "./" }]
+}

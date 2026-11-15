@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+*~
+*.swp
+.claude-plugin/types/
+node_modules/
