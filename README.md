@@ -17,16 +17,16 @@ The globe centres itself on each viewer: the scene reads the viewer's own time z
 At the prompt of a terminal session:
 
 ```
-/plugin install clock-solar-blueprint --marketplace <owner>/<repo>
+/plugin install clock-solar-blueprint --marketplace 1inq/clock-solar-blueprint
 ```
 
 From a shell:
 
 ```
-claude plugin install clock-solar-blueprint --marketplace <owner>/<repo>
+claude plugin install clock-solar-blueprint --marketplace 1inq/clock-solar-blueprint
 ```
 
-In the desktop app, where `/plugin` does not run: click + next to the prompt box, then Plugins, Add marketplace with `<owner>/<repo>`, then Add plugin.
+In the desktop app, where `/plugin` does not run: click + next to the prompt box, then Plugins, Add marketplace with `1inq/clock-solar-blueprint`, then Add plugin.
 
 ## Credits
 
