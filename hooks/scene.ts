@@ -279,6 +279,25 @@ function globe(now: Date): string {
   )
 }
 
+// ---- Date card between the clock and the globe (experiment) ----
+const DAYS = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+const MONTHS = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
+const CARD_X = 1487
+const CARD_Y = 420
+
+function dateCard(now: Date): string {
+  const x = CARD_X
+  const y = CARD_Y
+  const day = String(now.getDate())
+  return (
+    `<rect x="${x - 88}" y="${y - 30}" width="176" height="60" rx="3" fill="#0c2444" fill-opacity=".35" stroke="${CHALK}" stroke-width="1" opacity=".75"/>` +
+    `<path d="M${x - 34} ${y - 20}V${y + 20}" stroke="${CHALK}" stroke-width=".8" opacity=".4"/>` +
+    `<text x="${x - 61}" y="${y + 1}" text-anchor="middle" dominant-baseline="middle" font-size="32" fill="${GOLD}">${day}</text>` +
+    `<text x="${x - 24}" y="${y - 7}" font-size="13" fill="#eaf3ff" opacity=".95">${DAYS[now.getDay()]}</text>` +
+    `<text x="${x - 24}" y="${y + 12}" font-size="11" fill="${CHALK}" opacity=".8">${MONTHS[now.getMonth()]} ${now.getFullYear()}</text>`
+  )
+}
+
 function toothSpecks(): string {
   let s = ''
   for (let i = 0; i < 46; i += 1) {
@@ -313,7 +332,7 @@ export function clockSolarSvg(now: Date = new Date()): string {
 <mask id="notInColumn" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1000"><rect width="1600" height="1000" fill="url(#r0)"/></mask>
 <mask id="fainterInColumn" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1000"><rect width="1600" height="1000" fill="url(#r1)"/></mask>`
   const grid = `<rect width="1600" height="1000" fill="url(#minorGrid)" mask="url(#notInColumn)"/><rect width="1600" height="1000" fill="url(#oddMajorGrid)" mask="url(#notInColumn)"/><rect width="1600" height="1000" fill="url(#evenMajorGrid)" mask="url(#fainterInColumn)"/>`
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" font-family="monospace" color="#888"><style>${style}</style><defs>${defs}</defs><rect width="1600" height="1000" fill="#22508e"/>${wash}<rect width="1600" height="1000" fill="url(#tooth)"/>${grid}${solarSystem(now)}${clock(now)}${globe(now)}</svg>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" font-family="monospace" color="#888"><style>${style}</style><defs>${defs}</defs><rect width="1600" height="1000" fill="#22508e"/>${wash}<rect width="1600" height="1000" fill="url(#tooth)"/>${grid}${solarSystem(now)}${clock(now)}${dateCard(now)}${globe(now)}</svg>`
 }
 
 // Self-check: Earth's longitude on the March equinox 2025 (Mar 20 09:01 UTC) is ~180° (sun seen at 0°), within a degree or two.
