@@ -82,10 +82,27 @@ function solarSystem(now: Date): string {
   return out
 }
 
-function clock(now: Date): string {
+/** Hand angles in degrees at `now`. */
+function clockAngles(now: Date): { hour: number; min: number; sec: number } {
   const sec = now.getSeconds() + now.getMilliseconds() / 1000
   const min = now.getMinutes() + sec / 60
   const hour = (now.getHours() % 12) + min / 60
+  return { hour: round(hour * 30), min: round(min * 6), sec: round(sec * 6) }
+}
+
+/** The hands' CSS, for the scene's one root <style>. */
+function clockCss(now: Date): string {
+  const a = clockAngles(now)
+  const run = (name: string, from: number): string => `@keyframes ${name}{from{transform:rotate(${from}deg)}to{transform:rotate(${round(from + 360)}deg)}}`
+  return `.hourHand,.minHand,.secHand{transform-origin:${CLOCK_X}px ${CLOCK_Y}px}
+.hourHand{animation:hourRun 43200s linear infinite}
+.minHand{animation:minRun 3600s linear infinite}
+.secHand{animation:secRun 60s steps(60) infinite}
+${run('hourRun', a.hour)}${run('minRun', a.min)}${run('secRun', a.sec)}`
+}
+
+function clock(now: Date): string {
+  const angles = clockAngles(now)
   const [cx, cy, r] = [CLOCK_X, CLOCK_Y, CLOCK_R]
   let ticks = ''
   for (let i = 0; i < 60; i += 1) {
@@ -99,16 +116,14 @@ function clock(now: Date): string {
     const a = rad(k * 30 - 90)
     nums += `<text x="${round(cx + (r - 28) * Math.cos(a))}" y="${round(cy + (r - 28) * Math.sin(a))}" text-anchor="middle" dominant-baseline="middle" font-size="14" fill="${CHALK}" opacity=".7">${n}</text>`
   }
-  const hand = (cls: string, len: number, tail: number, w: number, color: string, op: number): string =>
-    `<path class="${cls}" d="M${cx} ${cy + tail}V${cy - len}" stroke="${color}" stroke-width="${w}" stroke-linecap="round" opacity="${op}" fill="none"/>`
+  // each hand carries the angle it was built for inline: where an animation is off or restarts, the hands still show a real time, never 12 o'clock
+  const hand = (cls: 'hourHand' | 'minHand' | 'secHand', len: number, tail: number, w: number, color: string, op: number): string =>
+    `<path class="${cls}" style="transform-origin:${cx}px ${cy}px;transform:rotate(${angles[cls === 'hourHand' ? 'hour' : cls === 'minHand' ? 'min' : 'sec']}deg)" d="M${cx} ${cy + tail}V${cy - len}" stroke="${color}" stroke-width="${w}" stroke-linecap="round" opacity="${op}" fill="none"/>`
   return (
     `<circle class="medium" cx="${cx}" cy="${cy}" r="${r + 10}"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#0c2444" fill-opacity=".35" stroke="${CHALK}" stroke-width="1.4" opacity=".7"/>` +
     `<path d="${ticks}" stroke="${CHALK}" stroke-width="1" opacity=".55" fill="none"/>${nums}` +
     hand('hourHand', r * 0.5, 10, 3.4, CHALK, 0.9) + hand('minHand', r * 0.78, 12, 2.4, CHALK, 0.9) + hand('secHand', r * 0.88, 18, 1.2, GOLD, 0.95) +
-    `<circle cx="${cx}" cy="${cy}" r="4" fill="${GOLD}"/>` +
-    `<style>@keyframes hourRun{from{transform:rotate(${round(hour * 30)}deg)}to{transform:rotate(${round(hour * 30 + 360)}deg)}}` +
-    `@keyframes minRun{from{transform:rotate(${round(min * 6)}deg)}to{transform:rotate(${round(min * 6 + 360)}deg)}}` +
-    `@keyframes secRun{from{transform:rotate(${round(sec * 6)}deg)}to{transform:rotate(${round(sec * 6 + 360)}deg)}}</style>`
+    `<circle cx="${cx}" cy="${cy}" r="4" fill="${GOLD}"/>`
   )
 }
 
@@ -316,11 +331,7 @@ export function clockSolarSvg(now: Date = new Date()): string {
 .medium{fill:none;stroke:${CHALK};stroke-width:1;opacity:.24}
 .fine{fill:none;stroke:${CHALK};stroke-width:.8;opacity:.2}
 .chain{stroke-dasharray:26 5 4 5}
-.hourHand,.minHand,.secHand{transform-origin:${CLOCK_X}px ${CLOCK_Y}px}
-.hourHand{animation:hourRun 43200s linear infinite}
-.minHand{animation:minRun 3600s linear infinite}
-.secHand{animation:secRun 60s steps(60) infinite}
-@media (prefers-reduced-motion: reduce){*{animation:none!important}}`
+${clockCss(now)}`
   const defs = `
 <radialGradient id="washDeep"><stop offset="0" stop-color="#0e2c58" stop-opacity=".78"/><stop offset=".4" stop-color="#0e2c58" stop-opacity=".46"/><stop offset=".72" stop-color="#0e2c58" stop-opacity=".15"/><stop offset="1" stop-color="#0e2c58" stop-opacity="0"/></radialGradient>
 <radialGradient id="sunGlow"><stop offset="0" stop-color="#ffe08a" stop-opacity=".9"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient>
