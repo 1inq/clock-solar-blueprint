@@ -28,6 +28,10 @@ claude plugin install clock-solar-blueprint --marketplace 1inq/clock-solar-bluep
 
 In the desktop app, where `/plugin` does not run: click + next to the prompt box, then Plugins, Add marketplace with `1inq/clock-solar-blueprint`, then Add plugin.
 
+## Update
+
+From the chat, type `/update-clock-solar` (it runs `claude plugin update clock-solar-blueprint@clock-solar-blueprint`), then `/reload-plugins`.
+
 ## Credits
 
 The sheet, grid and paper texture are adapted from the `blueprint` scene of Anthropic's `theme-examples` plugin (Apache-2.0). This plugin is released under the same license; see `LICENSE`.
